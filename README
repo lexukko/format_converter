@@ -1,0 +1,11 @@
+Realiza conversiones de un formato de texto plano a otro.
+
+Formatos Soportados:
+
+	* JSON
+	* Delimitados
+	* Ancho Fijo (por lineas)
+	* Ancho Fijo (por porciones de caracteres)
+	* Verificador de campos
+
+
