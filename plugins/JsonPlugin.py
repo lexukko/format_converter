@@ -19,7 +19,7 @@ class JSONReaderLines(IPlugin_Reader):
         # dynamic DynDialog
         dialog = DynDialog()
         dialog.set_tittle("{0} - Setup".format(self.name))
-        dialog.add_file("file_path", "Select File:", "Text Files (*.txt,*.csv,*.dat);;All Files(*.*)",
+        dialog.add_file("file_path", "Select File:", "Text Files (*.txt *.csv *.dat);;All Files(*.*)",
                         DynDialog.FILE_DIALOG_OPEN)
         dialog.add_line_edit("encoding", "Encoding:", "", "")
         dialog.exec_()
@@ -59,7 +59,7 @@ class JSONWriterLines(IPlugin_Writer):
         # dynamic DynDialog
         dialog = DynDialog()
         dialog.set_tittle("{0} - Setup".format(self.name))
-        dialog.add_file("file_path", "Select File:", "Text Files (*.txt,*.csv,*.dat);;All Files(*.*)",
+        dialog.add_file("file_path", "Select File:", "Text Files (*.txt *.csv *.dat);;All Files(*.*)",
                         DynDialog.FILE_DIALOG_SAVE)
         dialog.add_line_edit("encoding", "Encoding:", "", "")
         dialog.exec_()

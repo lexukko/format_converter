@@ -67,7 +67,7 @@ class DelimitedWriterLines(IPlugin_Writer):
         # dynamic DynDialog
         dialog = DynDialog()
         dialog.set_tittle("{0} - Setup".format(self.name))
-        dialog.add_file("file_path", "Select File:", "Text Files (*.txt,*.csv,*.dat);;All Files(*.*)",
+        dialog.add_file("file_path", "Select File:", "Text Files (*.txt *.csv *.dat);;All Files(*.*)",
                         DynDialog.FILE_DIALOG_SAVE)
         dialog.add_line_edit("delimiter", "Delimiter:", "", "")
         dialog.add_line_edit("quotechar", "Quote Char:", "", "")
