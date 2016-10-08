@@ -2,5 +2,6 @@
 .idea/*
 .project/*
 __pycache__/*
-plugins/__pycache__/*
+**/__pycache__/*
 *.pyc
+
