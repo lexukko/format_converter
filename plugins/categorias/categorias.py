@@ -1,7 +1,7 @@
 """ Clase base para plugins de lectura """
 
 
-class IPlugin_Reader(object):
+class PluginReader(object):
     def set_config(self):
         pass
 
@@ -18,7 +18,7 @@ class IPlugin_Reader(object):
 """ Clase base para plugins de escritura """
 
 
-class IPlugin_Writer(object):
+class PluginWriter(object):
     def set_config(self):
         pass
 

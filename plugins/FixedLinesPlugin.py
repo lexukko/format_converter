@@ -1,9 +1,9 @@
 import locale
-from plugins.categorias.categorias import IPlugin_Reader, IPlugin_Writer
+from plugins.categorias.categorias import PluginReader, PluginWriter
 from plugins.dynUI.dynUI import DynDialog
 
 
-class FixedReaderLines(IPlugin_Reader):
+class FixedReaderLines(PluginReader):
     def __init__(self):
         self.name = "FixedReaderLines"
         self.version = "1.0"
@@ -68,7 +68,7 @@ class FixedReaderLines(IPlugin_Reader):
         self.fixed_file.close()
 
 
-class FixedWriterLines(IPlugin_Writer):
+class FixedWriterLines(PluginWriter):
     def __init__(self):
         self.name = "FixedWriterLines"
         self.version = "1.0"

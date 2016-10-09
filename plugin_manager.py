@@ -1,4 +1,4 @@
-from plugins.categorias.categorias import IPlugin_Reader, IPlugin_Writer
+from plugins.categorias.categorias import PluginReader, PluginWriter
 from livetribe.plugins import collect_plugin_classes
 
 

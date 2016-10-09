@@ -4,7 +4,7 @@ from datetime import datetime
 from PyQt5.QtWidgets import QApplication, QMainWindow
 from gui.ui_mainwindow import Ui_MainWindow
 import gui.icons_rc
-from plugins.categorias.categorias import IPlugin_Reader, IPlugin_Writer
+from plugins.categorias.categorias import PluginReader, PluginWriter
 from plugin_manager import PluginManager
 
 
@@ -23,7 +23,7 @@ class MyWindowClass(QMainWindow):
 
         # conversion manager
         self.pm = PluginManager()
-        self.pm.load_plugins('plugins', [IPlugin_Reader, IPlugin_Writer], False)
+        self.pm.load_plugins('plugins', [PluginReader, PluginWriter], False)
 
     def line_count(self, plugin_reader):
         line_count = 0
@@ -66,10 +66,10 @@ class MyWindowClass(QMainWindow):
 
     def refresh(self):
         self.ui.lstreaders.clear()
-        for reader in self.pm.getNamesByClass(IPlugin_Reader):
+        for reader in self.pm.getNamesByClass(PluginReader):
             self.ui.lstreaders.addItem(reader)
         self.ui.lstwritters.clear()
-        for writer in self.pm.getNamesByClass(IPlugin_Writer):
+        for writer in self.pm.getNamesByClass(PluginWriter):
             self.ui.lstwritters.addItem(writer)
         self.ui.txtlog.append("[Done] - Refresh")
         self.ui.statusBar.showMessage("[Done]")

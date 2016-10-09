@@ -1,9 +1,9 @@
 import locale
-from plugins.categorias.categorias import IPlugin_Reader, IPlugin_Writer
+from plugins.categorias.categorias import PluginReader, PluginWriter
 from plugins.dynUI.dynUI import DynDialog
 
 
-class FixedReaderChunks(IPlugin_Reader):
+class FixedReaderChunks(PluginReader):
     def __init__(self):
         self.name = "FixedReaderChunks"
         self.version = "1.0"
@@ -69,7 +69,7 @@ class FixedReaderChunks(IPlugin_Reader):
         self.fixed_file.close()
 
 
-class FixedWriterChunks(IPlugin_Writer):
+class FixedWriterChunks(PluginWriter):
     def __init__(self):
         self.name = "FixedWriterChunks"
         self.version = "1.0"

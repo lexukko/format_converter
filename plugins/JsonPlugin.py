@@ -1,10 +1,10 @@
 import json
 import locale
-from plugins.categorias.categorias import IPlugin_Reader, IPlugin_Writer
+from plugins.categorias.categorias import PluginReader, PluginWriter
 from plugins.dynUI.dynUI import DynDialog
 
 
-class JSONReaderLines(IPlugin_Reader):
+class JSONReaderLines(PluginReader):
     def __init__(self):
         self.name = "JSONReaderLines"
         self.version = "1.0"
@@ -44,7 +44,7 @@ class JSONReaderLines(IPlugin_Reader):
         self.json_file.close()
 
 
-class JSONWriterLines(IPlugin_Writer):
+class JSONWriterLines(PluginWriter):
     def __init__(self):
         self.name = "JSONWriterLines"
         self.version = "1.0"

@@ -1,6 +1,6 @@
 import datetime
 import re
-from plugins.categorias.categorias import IPlugin_Writer
+from plugins.categorias.categorias import PluginWriter
 from plugins.dynUI.dynUI import DynDialog
 
 
@@ -9,7 +9,7 @@ class PlugValidatorError(Exception):
         self.message = message
 
 
-class ValidateWriter(IPlugin_Writer):
+class ValidateWriter(PluginWriter):
     def __init__(self):
         self.name = "ValidateWriter"
         self.version = "1.0"

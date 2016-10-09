@@ -1,10 +1,10 @@
 import csv
 import locale
-from plugins.categorias.categorias import IPlugin_Reader, IPlugin_Writer
+from plugins.categorias.categorias import PluginReader, PluginWriter
 from plugins.dynUI.dynUI import DynDialog
 
 
-class DelimitedReaderLines(IPlugin_Reader):
+class DelimitedReaderLines(PluginReader):
     def __init__(self):
         self.name = "DelimitedReaderLines"
         self.version = "1.0"
@@ -50,7 +50,7 @@ class DelimitedReaderLines(IPlugin_Reader):
         self.csv_file.close()
 
 
-class DelimitedWriterLines(IPlugin_Writer):
+class DelimitedWriterLines(PluginWriter):
     def __init__(self):
         self.name = "DelimitedWriterLines"
         self.version = "1.0"
