@@ -88,7 +88,7 @@ class DelimitedWriterLines(PluginWriter):
         self.csv_writer = csv.writer(self.csv_file, delimiter=self.delimiter, quotechar=self.quotechar,
                                      quoting=csv.QUOTE_MINIMAL)
 
-    def process_row(self, line):
+    def write(self, line):
         self.csv_writer.writerow(line)
         self.current_row += 1
 

@@ -14,6 +14,18 @@ class PluginReader(object):
     def close(self):
         pass
 
+""" Clase de procesamiento de informacion """
+
+
+class PluginProcess(object):
+    def set_config(self):
+        pass
+
+    def process(self):
+        pass
+
+    def show_results(self):
+        pass
 
 """ Clase base para plugins de escritura """
 
@@ -25,7 +37,7 @@ class PluginWriter(object):
     def open(self):
         pass
 
-    def process_row(self):
+    def write(self):
         pass
 
     def close(self):

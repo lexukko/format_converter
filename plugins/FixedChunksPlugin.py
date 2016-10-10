@@ -111,7 +111,7 @@ class FixedWriterChunks(PluginWriter):
     def open(self):
         self.fixed_file = open(file=self.file_path, mode="wt", newline=None, encoding=self.encoding)
 
-    def process_row(self, line):
+    def write(self, line):
         line_fixed = ""
         for j in range(0, len(self.tamanios)):
             if self.orientations[j] == "l":

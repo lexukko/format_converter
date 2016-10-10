@@ -43,7 +43,7 @@ class MyWindowClass(QMainWindow):
             plugin_reader.open()
             plugin_writter.open()
             for line in plugin_reader.read():
-                plugin_writter.process_row(line)
+                plugin_writter.write(line)
             plugin_reader.close()
             plugin_writter.close()
             stop_time = datetime.now()

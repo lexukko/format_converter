@@ -74,7 +74,7 @@ class JSONWriterLines(PluginWriter):
     def open(self):
         self.json_file = open(file=self.file_path, mode="wt", newline=None, encoding=self.encoding)
 
-    def process_row(self, line):
+    def write(self, line):
         json_line = json.dumps(line)
         self.json_file.write(json_line + "\n")
         self.current_row += 1

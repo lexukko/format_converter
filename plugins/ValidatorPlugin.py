@@ -57,7 +57,7 @@ class ValidateWriter(PluginWriter):
     def open(self):
         pass
 
-    def process_row(self, line):
+    def write(self, line):
         self.current_row += 1
         if self.current_row > self.skip_no:
             if not self.is_valid_row(line):
