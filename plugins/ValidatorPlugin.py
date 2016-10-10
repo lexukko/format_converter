@@ -48,12 +48,13 @@ class ValidateProcess(PluginProcess):
                             True
                         ]
                          )
-        dialog.exec_()
-        config = dialog.data_dict
+        res = dialog.exec_()
         # set config
-        self.formats = config["tbl"][0]
-        self.allow_nulls = config["tbl"][1]
-        self.skip_no = int(config["skip"])
+        if res == DynDialog.Accepted:
+            config = dialog.data_dict
+            self.formats = config["tbl"][0]
+            self.allow_nulls = config["tbl"][1]
+            self.skip_no = int(config["skip"])
 
     def process(self, line):
         self.current_row += 1

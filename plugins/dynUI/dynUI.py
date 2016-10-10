@@ -12,6 +12,7 @@ class DynDialog(QDialog):
     def __init__(self, parent=None):
         super(DynDialog, self).__init__(parent)
         self.init_ui()
+        self.resize(500, 400)
 
     def set_tittle(self, tittle):
         self.setWindowTitle(tittle)

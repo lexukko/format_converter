@@ -28,16 +28,17 @@ class FixedReaderChunks(PluginReader):
                          ["Size"],
                          [None]
                          )
-        dialog.exec_()
-        config = dialog.data_dict
+        res = dialog.exec_()
         # set config
-        self.file_path = config["file_path"]
-        self.tamanios = config["tbl"][0]
-        self.line_size = sum(int(field_size) for field_size in self.tamanios)
-        if config["encoding"]:
-            self.encoding = config["encoding"]
-        else:
-            self.encoding = locale.getpreferredencoding(False)
+        if res == DynDialog.Accepted:
+            config = dialog.data_dict
+            self.file_path = config["file_path"]
+            self.tamanios = config["tbl"][0]
+            self.line_size = sum(int(field_size) for field_size in self.tamanios)
+            if config["encoding"]:
+                self.encoding = config["encoding"]
+            else:
+                self.encoding = locale.getpreferredencoding(False)
 
     def open(self):
         self.fixed_file = open(file=self.file_path, mode="rt", newline=None, encoding=self.encoding)
@@ -97,16 +98,17 @@ class FixedWriterChunks(PluginWriter):
                             {"Rigth": "r", "Left": "l"}
                         ]
                          )
-        dialog.exec_()
-        config = dialog.data_dict
+        res = dialog.exec_()
         # set config
-        self.file_path = config["file_path"]
-        self.tamanios = config["tbl"][0]
-        self.orientations = config["tbl"][1]
-        if config["encoding"]:
-            self.encoding = config["encoding"]
-        else:
-            self.encoding = locale.getpreferredencoding(False)
+        if res == DynDialog.Accepted:
+            config = dialog.data_dict
+            self.file_path = config["file_path"]
+            self.tamanios = config["tbl"][0]
+            self.orientations = config["tbl"][1]
+            if config["encoding"]:
+                self.encoding = config["encoding"]
+            else:
+                self.encoding = locale.getpreferredencoding(False)
 
     def open(self):
         self.fixed_file = open(file=self.file_path, mode="wt", newline=None, encoding=self.encoding)

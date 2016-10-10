@@ -26,16 +26,17 @@ class DelimitedReaderLines(PluginReader):
         dialog.add_line_edit("delimiter", "Delimiter:", "", "")
         dialog.add_line_edit("quotechar", "Quote Char:", "", "")
         dialog.add_line_edit("encoding", "Encoding:", "", "")
-        dialog.exec_()
-        config = dialog.data_dict
+        res = dialog.exec_()
         # set config
-        self.file_path = config["file_path"]
-        self.delimiter = config["delimiter"]
-        self.quotechar = config["quotechar"]
-        if config["encoding"]:
-            self.encoding = config["encoding"]
-        else:
-            self.encoding = locale.getpreferredencoding(False)
+        if res == DynDialog.Accepted:
+            config = dialog.data_dict
+            self.file_path = config["file_path"]
+            self.delimiter = config["delimiter"]
+            self.quotechar = config["quotechar"]
+            if config["encoding"]:
+                self.encoding = config["encoding"]
+            else:
+                self.encoding = locale.getpreferredencoding(False)
 
     def open(self):
         self.csv_file = open(file=self.file_path, mode="rt", newline="", encoding=self.encoding)
@@ -72,16 +73,17 @@ class DelimitedWriterLines(PluginWriter):
         dialog.add_line_edit("delimiter", "Delimiter:", "", "")
         dialog.add_line_edit("quotechar", "Quote Char:", "", "")
         dialog.add_line_edit("encoding", "Encoding:", "", "")
-        dialog.exec_()
-        config = dialog.data_dict
+        res = dialog.exec_()
         # set config
-        self.file_path = config["file_path"]
-        self.delimiter = config["delimiter"]
-        self.quotechar = config["quotechar"]
-        if config["encoding"]:
-            self.encoding = config["encoding"]
-        else:
-            self.encoding = locale.getpreferredencoding(False)
+        if res == DynDialog.Accepted:
+            config = dialog.data_dict
+            self.file_path = config["file_path"]
+            self.delimiter = config["delimiter"]
+            self.quotechar = config["quotechar"]
+            if config["encoding"]:
+                self.encoding = config["encoding"]
+            else:
+                self.encoding = locale.getpreferredencoding(False)
 
     def open(self):
         self.csv_file = open(file=self.file_path, mode="wt", newline="", encoding=self.encoding)

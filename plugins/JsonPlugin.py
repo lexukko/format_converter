@@ -22,14 +22,15 @@ class JSONReaderLines(PluginReader):
         dialog.add_file("file_path", "Select File:", "Text Files (*.txt *.csv *.dat);;All Files(*.*)",
                         DynDialog.FILE_DIALOG_OPEN)
         dialog.add_line_edit("encoding", "Encoding:", "", "")
-        dialog.exec_()
-        config = dialog.data_dict
+        res = dialog.exec_()
         # set config
-        self.file_path = config["file_path"]
-        if config["encoding"]:
-            self.encoding = config["encoding"]
-        else:
-            self.encoding = locale.getpreferredencoding(False)
+        if res == DynDialog.Accepted:
+            config = dialog.data_dict
+            self.file_path = config["file_path"]
+            if config["encoding"]:
+                self.encoding = config["encoding"]
+            else:
+                self.encoding = locale.getpreferredencoding(False)
 
     def open(self):
         self.json_file = open(file=self.file_path, mode="rt", newline=None, encoding=self.encoding)
@@ -62,14 +63,15 @@ class JSONWriterLines(PluginWriter):
         dialog.add_file("file_path", "Select File:", "Text Files (*.txt *.csv *.dat);;All Files(*.*)",
                         DynDialog.FILE_DIALOG_SAVE)
         dialog.add_line_edit("encoding", "Encoding:", "", "")
-        dialog.exec_()
-        config = dialog.data_dict
+        res = dialog.exec_()
         # set config
-        self.file_path = config["file_path"]
-        if config["encoding"]:
-            self.encoding = config["encoding"]
-        else:
-            self.encoding = locale.getpreferredencoding(False)
+        if res == DynDialog.Accepted:
+            config = dialog.data_dict
+            self.file_path = config["file_path"]
+            if config["encoding"]:
+                self.encoding = config["encoding"]
+            else:
+                self.encoding = locale.getpreferredencoding(False)
 
     def open(self):
         self.json_file = open(file=self.file_path, mode="wt", newline=None, encoding=self.encoding)
