@@ -24,8 +24,6 @@ class PluginProcess(object):
     def process(self):
         pass
 
-    def show_results(self):
-        pass
 
 """ Clase base para plugins de escritura """
 

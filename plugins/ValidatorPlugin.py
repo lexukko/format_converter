@@ -1,6 +1,6 @@
 import datetime
 import re
-from plugins.categorias.categorias import PluginWriter
+from plugins.categorias.categorias import PluginProcess
 from plugins.dynUI.dynUI import DynDialog
 
 
@@ -9,14 +9,14 @@ class PlugValidatorError(Exception):
         self.message = message
 
 
-class ValidateWriter(PluginWriter):
+class ValidateProcess(PluginProcess):
     def __init__(self):
-        self.name = "ValidateWriter"
+        self.name = "ValidateProcess"
         self.version = "1.0"
         self.description = "Plugin verificador de tipos de dato"
 
-        self.formats = []  # # decimal, #.# flotante, DDMMYYY or DD-MM-YYYY etc..,
-        self.allow_nulls = []  # para cada campo True para no evaluar campos nulos o False para evaluarlos [True, True, False]
+        self.formats = []
+        self.allow_nulls = []
         self.skip_no = 0
 
         self.msgErrorLine = None
@@ -54,10 +54,7 @@ class ValidateWriter(PluginWriter):
         self.allow_nulls = config["tbl"][1]
         self.skip_no = int(config["skip"])
 
-    def open(self):
-        pass
-
-    def write(self, line):
+    def process(self, line):
         self.current_row += 1
         if self.current_row > self.skip_no:
             if not self.is_valid_row(line):
@@ -65,9 +62,6 @@ class ValidateWriter(PluginWriter):
                     "ERROR: Linea {0}, Columna {1}, Msg: {2}".format(self.current_row, self.current_col,
                                                                      self.msgErrorLine))
         return line
-
-    def close(self):
-        pass
 
     # ---------------------------------------------------------------------------------------------------------------------------
     # -- funciones auxiliares
