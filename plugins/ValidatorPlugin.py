@@ -32,9 +32,10 @@ class ValidateProcess(PluginProcess):
                         "Types & Nulls",
                          ["formats", "allow_nulls"],
                          [{
-                            'Text': 'NA',
-                            'Integer': '#',
-                            'Float': '#.#',
+                            'Text': 'text',
+                            'Integer': 'integer',
+                            'Float': 'float',
+                            'Number': 'number',
                             'Date: DD-MM-YYYY ': 'DD-MM-YYYY',
                             'Date: DD/MM/YYYY ': 'DD/MM/YYYY',
                             'Date: DD MM YYYY': 'DD MM YYYY',
@@ -110,15 +111,19 @@ class ValidateProcess(PluginProcess):
                 self.msgErrorLine = "no acepta nulos."
                 return False
 
-            if format == "#":
+            if format == "integer":
                 if not self.is_int(field):
                     self.msgErrorLine = "entero invalido."
                     return False
-            elif format == "#.#":
+            elif format == "float":
                 if not self.is_dec(field):
                     self.msgErrorLine = "decimal invalido."
                     return False
-            elif format == "NA":
+            elif format == "number":
+                if not (self.is_dec(field) or self.is_int(field)):
+                    self.msgErrorLine = "numero invalido"
+                    return False
+            elif format == "text":
                 pass
             else:
                 if not self.is_date(field, format):

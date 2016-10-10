@@ -24,7 +24,6 @@ class MyWindowClass(QMainWindow):
         # conversion manager
         self.pm = PluginManager()
         self.pm.load_plugins('plugins', [PluginReader, PluginProcess, PluginWriter], False)
-        print(self.pm.plugins_classes)
 
     def line_count(self, plugin_reader):
         line_count = 0
@@ -38,31 +37,40 @@ class MyWindowClass(QMainWindow):
             return json.dumps({"error": str(e)})
         return line_count
 
-    def transform(self, plugin_reader, plugin_writter):
+    def transform(self, plugin_reader, plugin_process, plugin_writter):
         try:
             start_time = datetime.now()
+            # transform
             plugin_reader.open()
-            plugin_writter.open()
+            if plugin_writter is not None:
+                plugin_writter.open()
+            # loop
             for line in plugin_reader.read():
-                plugin_writter.write(line)
+                if plugin_process is None:
+                    if plugin_writter is not None:
+                        plugin_writter.write(line)
+                else:
+                    if plugin_writter is not None:
+                        plugin_writter.write(plugin_process.process(line))
+                    else:
+                        plugin_process.process(line)
+            if plugin_writter is not None:
+                plugin_writter.close()
             plugin_reader.close()
-            plugin_writter.close()
+            # Time & stadisticts
             stop_time = datetime.now()
             elapsed_time = stop_time - start_time
             statistics = {
-                "lines_read": plugin_reader.current_row,
-                "written_lines": plugin_writter.current_row,
                 "time_elapsed": str(elapsed_time)
             }
         except Exception as e:
             statistics = {
-                "lines_read": plugin_reader.current_row,
-                "written_lines": plugin_writter.current_row,
                 "error": str(e)
             }
         finally:
             plugin_reader.close()
-            plugin_writter.close()
+            if plugin_writter is not None:
+                plugin_writter.close()
         return json.dumps(statistics, indent=4, separators=(',', ':'))
 
     def refresh(self):
@@ -80,16 +88,32 @@ class MyWindowClass(QMainWindow):
 
     def run(self):
         iplug_name = self.ui.lstreaders.currentItem()
+        pplug_name = self.ui.lstprocess.currentItem()
         oplug_name = self.ui.lstwritters.currentItem()
-        if iplug_name is None or oplug_name is None:
-            self.ui.txtlog.append("[Error] - Select plugins")
+
+        if iplug_name is None:
+            self.ui.txtlog.append("[Error] - Select input plugin")
             return
+
+        if pplug_name is None and oplug_name is None:
+            self.ui.txtlog.append("[Error] - Select process/output plugin(s)")
+            return
+
         plugin_reader = self.pm.getClassByName(iplug_name.text())()
-        plugin_writter = self.pm.getClassByName(oplug_name.text())()
         plugin_reader.set_config()
-        plugin_writter.set_config()
+
+        plugin_process = None
+        if pplug_name is not None:
+            plugin_process = self.pm.getClassByName(pplug_name.text())()
+            plugin_process.set_config()
+
+        plugin_writter = None
+        if oplug_name is not None:
+            plugin_writter = self.pm.getClassByName(oplug_name.text())()
+            plugin_writter.set_config()
+
         self.ui.txtlog.append("[Working] Transforming Inputs.")
-        data = self.transform(plugin_reader, plugin_writter)
+        data = self.transform(plugin_reader, plugin_process, plugin_writter)
         self.ui.txtlog.append(data)
         self.ui.txtlog.append("[Done] Transformed.")
 
