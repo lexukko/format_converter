@@ -34,7 +34,7 @@ class DynDialog(QDialog):
         self.okButton = QPushButton("OK")
         self.cancelButton = QPushButton("Cancel")
 
-        self.hbox = QHBoxLayout(self)
+        self.hbox = QHBoxLayout()
         self.hbox.addStretch(1)
         self.hbox.addWidget(self.okButton)
         self.hbox.addWidget(self.cancelButton)
