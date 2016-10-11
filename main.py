@@ -1,7 +1,8 @@
 import sys
 import json
+from gui.preview_dlg import Ui_Dialog
 from datetime import datetime
-from PyQt5.QtWidgets import QApplication, QMainWindow
+from PyQt5.QtWidgets import QApplication, QMainWindow, QInputDialog
 from gui.ui_mainwindow import Ui_MainWindow
 import gui.icons_rc
 from plugins.categorias.categorias import PluginReader, PluginWriter, PluginProcess
@@ -25,6 +26,8 @@ class MyWindowClass(QMainWindow):
         self.ui.pbprocessconfig.clicked.connect(self.lstprocess_config)
         self.ui.pbwriterconfig.clicked.connect(self.lstwriters_config)
 
+        self.ui.pbpreview.clicked.connect(self.preview_data)
+
         # conversion manager
         self.pm = PluginManager()
         self.pm.load_plugins('plugins', [PluginReader, PluginProcess, PluginWriter], False)
@@ -34,6 +37,15 @@ class MyWindowClass(QMainWindow):
         self.plugin_process = None
         self.plugin_writer = None
 
+        # table headers
+        self.ui.tblwidget.setColumnCount(3)
+        self.ui.tblwidget.setRowCount(3)
+        self.ui.tblwidget.setHorizontalHeaderLabels(["plugin", "read", "write"])
+
+    # utils functions
+
+    def refresh_table(self):
+        self.ui.tblwidget.clear()
 
     def line_count(self, plugin_reader):
         line_count = 0
@@ -47,41 +59,69 @@ class MyWindowClass(QMainWindow):
             return json.dumps({"error": str(e)})
         return line_count
 
-    def transform(self, plugin_reader, plugin_process, plugin_writter):
+    def transform(self):
+        if self.plugin_reader is None:
+            self.ui.txtlog.append("Select & config input plugin !!")
+            return
+        if self.plugin_process is None or self.plugin_writer is None:
+            self.ui.txtlog.append("Select & config process/input plugin(s) !!")
+            return
         try:
-            start_time = datetime.now()
             # transform
-            plugin_reader.open()
-            if plugin_writter is not None:
-                plugin_writter.open()
+            self.plugin_reader.open()
+            if self.plugin_writer is not None:
+                self.plugin_writer.open()
             # loop
-            for line in plugin_reader.read():
-                if plugin_process is None:
-                    if plugin_writter is not None:
-                        plugin_writter.write(line)
+            self.ui.txtlog.append("[Working] Transforming Inputs.")
+            for line in self.plugin_reader.read():
+                if self.plugin_process is None:
+                    if self.plugin_writer is not None:
+                        self.plugin_writer.write(line)
                 else:
-                    if plugin_writter is not None:
-                        plugin_writter.write(plugin_process.process(line))
+                    if self.plugin_writer is not None:
+                        self.plugin_writer.write(self.plugin_process.process(line))
                     else:
-                        plugin_process.process(line)
-            if plugin_writter is not None:
-                plugin_writter.close()
-            plugin_reader.close()
-            # Time & stadisticts
-            stop_time = datetime.now()
-            elapsed_time = stop_time - start_time
-            statistics = {
-                "time_elapsed": str(elapsed_time)
-            }
+                        self.plugin_process.process(line)
+            self.ui.txtlog.append("[Done] Success! .")
         except Exception as e:
-            statistics = {
-                "error": str(e)
-            }
+            self.ui.txtlog.append(str(e))
         finally:
-            plugin_reader.close()
-            if plugin_writter is not None:
-                plugin_writter.close()
-        return json.dumps(statistics, indent=4, separators=(',', ':'))
+            self.plugin_reader.close()
+            if self.plugin_writer is not None:
+                self.plugin_writer.close()
+            self.plugin_reader = None
+            self.plugin_process = None
+            self.plugin_writer = None
+
+    # SLOTS
+
+    def preview_data(self):
+        if self.plugin_reader is None:
+            self.ui.txtlog.append("Select & config input plugin !!")
+            return
+        # read data
+        preview_rows, ok = QInputDialog.getInt(self, "Input", "Select Number of rows")
+        current_row = 0
+        headers = []
+        data = []
+        try:
+            self.plugin_reader.open()
+            for line in self.plugin_reader.read():
+                current_row += 1
+                if current_row > 1:
+                    data.append(line)
+                else:
+                    headers = line
+                if current_row > int(preview_rows):
+                    break
+        except Exception as e:
+            self.ui.txtlog.append(str(e))
+        finally:
+            self.plugin_reader.close()
+        # display data
+        dlg = Ui_Dialog(self)
+        dlg.add_data(headers, data)
+        dlg.exec_()
 
     def lstreaders_config(self):
         iplug_name = self.ui.lstreaders.currentItem()
@@ -94,16 +134,16 @@ class MyWindowClass(QMainWindow):
     def lstprocess_config(self):
         pplug_name = self.ui.lstprocess.currentItem()
         if pplug_name is not None:
-            self.plugin_reader = self.pm.getClassByName(pplug_name.text())()
-            self.plugin_reader.set_config()
+            self.plugin_process = self.pm.getClassByName(pplug_name.text())()
+            self.plugin_process.set_config()
         else:
             self.ui.txtlog.append("[Error] - Select Plugin")
 
     def lstwriters_config(self):
         oplug_name = self.ui.lstwriters.currentItem()
         if oplug_name is not None:
-            self.plugin_reader = self.pm.getClassByName(oplug_name.text())()
-            self.plugin_reader.set_config()
+            self.plugin_writer = self.pm.getClassByName(oplug_name.text())()
+            self.plugin_writer.set_config()
         else:
             self.ui.txtlog.append("[Error] - Select Plugin")
 
@@ -120,13 +160,11 @@ class MyWindowClass(QMainWindow):
         self.ui.txtlog.append("[Done] - Refresh")
 
     def run(self):
-        self.ui.txtlog.append("[Working] Transforming Inputs.")
-        data = self.transform(self.plugin_reader, self.plugin_process, self.plugin_writer)
-        self.ui.txtlog.append(data)
-        self.ui.txtlog.append("[Done] Transformed.")
+        self.transform()
 
-
-app = QApplication(sys.argv)
-myWindow = MyWindowClass(None)
-myWindow.show()
-app.exec_()
+# Main
+if __name__ == "__main__":
+    app = QApplication(sys.argv)
+    myWindow = MyWindowClass(None)
+    myWindow.show()
+    app.exec_()
