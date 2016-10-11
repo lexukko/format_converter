@@ -121,7 +121,7 @@ class MyWindowClass(QMainWindow):
 
     def run(self):
         self.ui.txtlog.append("[Working] Transforming Inputs.")
-        data = self.transform(self.plugin_reader, self.plugin_process, self.plugin_writter)
+        data = self.transform(self.plugin_reader, self.plugin_process, self.plugin_writer)
         self.ui.txtlog.append(data)
         self.ui.txtlog.append("[Done] Transformed.")
 
