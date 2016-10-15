@@ -1,7 +1,7 @@
 import json
-import locale
 from plugins.categorias.categorias import PluginReader, PluginWriter
 from plugins.dynUI.dynUI import DynDialog
+from plugins.utils import python_encodings
 
 
 class JSONReaderLines(PluginReader):
@@ -21,16 +21,13 @@ class JSONReaderLines(PluginReader):
         dialog.set_tittle("{0} - Setup".format(self.name))
         dialog.add_file("file_path", "Select File:", "Text Files (*.txt *.csv *.dat);;All Files(*.*)",
                         DynDialog.FILE_DIALOG_OPEN)
-        dialog.add_line_edit("encoding", "Encoding:", "", "")
+        dialog.add_combo_box("encoding", "Encoding:", python_encodings, "utf_8")
         res = dialog.exec_()
         # set config
         if res == DynDialog.Accepted:
             config = dialog.data_dict
             self.file_path = config["file_path"]
-            if config["encoding"]:
-                self.encoding = config["encoding"]
-            else:
-                self.encoding = locale.getpreferredencoding(False)
+            self.encoding = config["encoding"]
 
     def open(self):
         self.json_file = open(file=self.file_path, mode="rt", newline=None, encoding=self.encoding)
@@ -62,16 +59,13 @@ class JSONWriterLines(PluginWriter):
         dialog.set_tittle("{0} - Setup".format(self.name))
         dialog.add_file("file_path", "Select File:", "Text Files (*.txt *.csv *.dat);;All Files(*.*)",
                         DynDialog.FILE_DIALOG_SAVE)
-        dialog.add_line_edit("encoding", "Encoding:", "", "")
+        dialog.add_combo_box("encoding", "Encoding:", python_encodings, "utf_8")
         res = dialog.exec_()
         # set config
         if res == DynDialog.Accepted:
             config = dialog.data_dict
             self.file_path = config["file_path"]
-            if config["encoding"]:
-                self.encoding = config["encoding"]
-            else:
-                self.encoding = locale.getpreferredencoding(False)
+            self.encoding = config["encoding"]
 
     def open(self):
         self.json_file = open(file=self.file_path, mode="wt", newline=None, encoding=self.encoding)

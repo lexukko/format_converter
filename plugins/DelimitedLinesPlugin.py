@@ -1,7 +1,7 @@
 import csv
-import locale
 from plugins.categorias.categorias import PluginReader, PluginWriter
 from plugins.dynUI.dynUI import DynDialog
+from plugins.utils import python_encodings
 
 
 class DelimitedReaderLines(PluginReader):
@@ -25,7 +25,7 @@ class DelimitedReaderLines(PluginReader):
                         DynDialog.FILE_DIALOG_OPEN)
         dialog.add_line_edit("delimiter", "Delimiter:", "", "")
         dialog.add_line_edit("quotechar", "Quote Char:", "", "")
-        dialog.add_line_edit("encoding", "Encoding:", "", "")
+        dialog.add_combo_box("encoding", "Encoding:", python_encodings, "utf_8")
         res = dialog.exec_()
         # set config
         if res == DynDialog.Accepted:
@@ -33,10 +33,7 @@ class DelimitedReaderLines(PluginReader):
             self.file_path = config["file_path"]
             self.delimiter = config["delimiter"]
             self.quotechar = config["quotechar"]
-            if config["encoding"]:
-                self.encoding = config["encoding"]
-            else:
-                self.encoding = locale.getpreferredencoding(False)
+            self.encoding = config["encoding"]
 
     def open(self):
         self.csv_file = open(file=self.file_path, mode="rt", newline="", encoding=self.encoding)
@@ -72,7 +69,7 @@ class DelimitedWriterLines(PluginWriter):
                         DynDialog.FILE_DIALOG_SAVE)
         dialog.add_line_edit("delimiter", "Delimiter:", "", "")
         dialog.add_line_edit("quotechar", "Quote Char:", "", "")
-        dialog.add_line_edit("encoding", "Encoding:", "", "")
+        dialog.add_combo_box("encoding", "Encoding:", python_encodings, "utf_8")
         res = dialog.exec_()
         # set config
         if res == DynDialog.Accepted:
@@ -80,10 +77,7 @@ class DelimitedWriterLines(PluginWriter):
             self.file_path = config["file_path"]
             self.delimiter = config["delimiter"]
             self.quotechar = config["quotechar"]
-            if config["encoding"]:
-                self.encoding = config["encoding"]
-            else:
-                self.encoding = locale.getpreferredencoding(False)
+            self.encoding = config["encoding"]
 
     def open(self):
         self.csv_file = open(file=self.file_path, mode="wt", newline="", encoding=self.encoding)

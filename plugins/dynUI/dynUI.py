@@ -55,11 +55,12 @@ class DynDialog(QDialog):
             self.txt.setText(data)
         self.FieldsLayout.addRow(caption, self.txt)
 
-    def add_combo_box(self, widget_name, caption, items):
+    def add_combo_box(self, widget_name, caption, items, default_item):
         self.cmb = QComboBox(self)
         self.cmb.setObjectName(widget_name)
         for k, v in items.items():
             self.cmb.addItem(k, v)
+        self.cmb.setCurrentIndex(self.cmb.findData(default_item))
         self.FieldsLayout.addRow(caption, self.cmb)
 
     def add_check_box(self, widget_name, caption, data):
@@ -147,7 +148,7 @@ class DynDialog(QDialog):
             if isinstance(w, QLineEdit):
                 self.data_dict[w.objectName()] = w.text()
             if isinstance(w, QComboBox):
-                self.data_dict[w.objectName()] = {w.currentText(): w.currentData()}
+                self.data_dict[w.objectName()] = w.currentData()
             if isinstance(w, QCheckBox):
                 self.data_dict[w.objectName()] = w.isChecked()
             if isinstance(w, QGroupBox):
