@@ -1,5 +1,6 @@
 import datetime
 import re
+from collections import OrderedDict
 from plugins.categorias.categorias import PluginProcess
 from plugins.dynUI.dynUI import DynDialog
 
@@ -24,29 +25,31 @@ class ValidateProcess(PluginProcess):
         self.current_col = 0
 
     def set_config(self):
+        # ordered Dict
+        formats = OrderedDict(
+            [
+                ('Text', 'text'),
+                ('Integer', 'integer'),
+                ('Float', 'float'),
+                ('Number', 'number'),
+                ('Date: DD-MM-YYYY', 'DD-MM-YYYY'),
+                ('Date: DD/MM/YYYY', 'DD/MM/YYYY'),
+                ('Date: DD MM YYYY', 'DD MM YYYY'),
+                ('Date: YYYY-MM-DD', 'YYYY-MM-DD'),
+                ('Date: YYYY/MM/DD', 'YYYY/MM/DD'),
+                ('Date: YYYY MM DD', 'YYYY MM DD'),
+                ('Date: DDMMYYYY', 'DDMMYYYY'),
+                ('Date: YYYYMMDD', 'YYYYMMDD')
+            ]
+        )
         # dynamic DynDialog
         dialog = DynDialog()
         dialog.set_tittle("{0} - Setup".format(self.name))
         dialog.add_line_edit("skip", "rows skip:", "header rows to skip", "1")
         dialog.add_table("tbl",
-                        "Types & Nulls",
+                         "Types & Nulls",
                          ["formats", "allow_nulls"],
-                         [{
-                            'Text': 'text',
-                            'Integer': 'integer',
-                            'Float': 'float',
-                            'Number': 'number',
-                            'Date: DD-MM-YYYY ': 'DD-MM-YYYY',
-                            'Date: DD/MM/YYYY ': 'DD/MM/YYYY',
-                            'Date: DD MM YYYY': 'DD MM YYYY',
-                            'Date: YYYY-MM-DD': 'YYYY-MM-DD',
-                            'Date: YYYY/MM/DD': 'YYYY/MM/DD',
-                            'Date: YYYY MM DD': 'YYYY MM DD',
-                            'Date: DDMMYYYY': 'DDMMYYYY',
-                            'Date: YYYYMMDD': 'YYYYMMDD'
-                        },
-                            True
-                        ]
+                         [formats, True]
                          )
         res = dialog.exec_()
         # set config
