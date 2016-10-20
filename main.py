@@ -2,7 +2,7 @@ import sys
 import json
 from gui.preview_dlg import Ui_Dialog
 from datetime import datetime
-from PyQt5.QtWidgets import QApplication, QMainWindow, QInputDialog
+from PyQt5.QtWidgets import QApplication, QMainWindow, QInputDialog, QLabel
 from gui.ui_mainwindow import Ui_MainWindow
 import gui.icons_rc
 from plugins.categorias.categorias import PluginReader, PluginWriter, PluginProcess
@@ -42,8 +42,67 @@ class MyWindowClass(QMainWindow):
         self.ui.tblwidget.setRowCount(3)
         self.ui.tblwidget.setHorizontalHeaderLabels(["plugin", "read", "write"])
 
-    # utils functions
+        # progress labels table
+        self.lbl_input_plugin = QLabel(self)
+        self.lbl_process_plugin = QLabel(self)
+        self.lbl_output_plugin = QLabel(self)
 
+        self.lbl_input_read = QLabel(self)
+        self.lbl_process_read = QLabel(self)
+        self.lbl_output_read = QLabel(self)
+
+        self.lbl_input_write = QLabel(self)
+        self.lbl_process_write = QLabel(self)
+        self.lbl_output_write = QLabel(self)
+
+        self.ui.tblwidget.setCellWidget(0, 0, self.lbl_input_plugin)
+        self.ui.tblwidget.setCellWidget(0, 1, self.lbl_process_plugin)
+        self.ui.tblwidget.setCellWidget(0, 2, self.lbl_output_plugin)
+
+        self.ui.tblwidget.setCellWidget(1, 0, self.lbl_input_read)
+        self.ui.tblwidget.setCellWidget(1, 1, self.lbl_process_read)
+        self.ui.tblwidget.setCellWidget(1, 2, self.lbl_output_read)
+
+        self.ui.tblwidget.setCellWidget(2, 0, self.lbl_input_write)
+        self.ui.tblwidget.setCellWidget(2, 1, self.lbl_process_write)
+        self.ui.tblwidget.setCellWidget(2, 2, self.lbl_output_write)
+
+        self.clearProgress()
+
+    def clearProgress(self):
+        self.lbl_input_plugin.setText("")
+        self.lbl_process_plugin.setText("")
+        self.lbl_output_plugin.setText("")
+
+        self.lbl_input_read.setText("")
+        self.lbl_process_read.setText("")
+        self.lbl_output_read.setText("")
+
+        self.lbl_input_write.setText("")
+        self.lbl_process_write.setText("")
+        self.lbl_output_write.setText("")
+
+    def updateProgress(self):
+        if self.plugin_reader is not None:
+            self.lbl_input_plugin.setText(self.plugin_reader.name)
+            self.lbl_process_plugin.setText(str(self.plugin_reader.current_row))
+            self.lbl_output_plugin.setText("")
+
+        if self.plugin_process is not None:
+            self.lbl_input_read.setText(self.plugin_process.name)
+            self.lbl_process_read.setText(str(self.plugin_process.current_row))
+            self.lbl_output_read.setText("")
+
+        if self.plugin_writer is not None:
+            self.lbl_input_write.setText(self.plugin_writer.name)
+            self.lbl_process_write.setText(str(self.plugin_writer.current_row))
+            self.lbl_output_write.setText("")
+
+        self.ui.tblwidget.resizeColumnsToContents()
+        self.ui.tblwidget.resizeRowsToContents()
+
+
+    # utils functions
     def refresh_table(self):
         self.ui.tblwidget.clear()
 
@@ -63,7 +122,7 @@ class MyWindowClass(QMainWindow):
         if self.plugin_reader is None:
             self.ui.txtlog.append("Select & config input plugin !!")
             return
-        if self.plugin_process is None or self.plugin_writer is None:
+        if self.plugin_process is None and self.plugin_writer is None:
             self.ui.txtlog.append("Select & config process/input plugin(s) !!")
             return
         try:
@@ -74,6 +133,7 @@ class MyWindowClass(QMainWindow):
             # loop
             self.ui.txtlog.append("[Working] Transforming Inputs.")
             for line in self.plugin_reader.read():
+                self.updateProgress()
                 if self.plugin_process is None:
                     if self.plugin_writer is not None:
                         self.plugin_writer.write(line)

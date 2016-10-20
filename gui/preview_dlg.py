@@ -1,6 +1,6 @@
 from PyQt5.QtCore import QCoreApplication
 from PyQt5.QtWidgets import QDialog, QVBoxLayout, QTableWidget, QHBoxLayout, QSpacerItem, QSizePolicy, QPushButton, \
-    QLineEdit
+    QLabel
 
 
 class Ui_Dialog(QDialog):
@@ -37,9 +37,10 @@ class Ui_Dialog(QDialog):
             y = self.tableWidget.rowCount()
             self.tableWidget.insertRow(y)
             for x in range(len(row)):
-                self.edit = QLineEdit()
-                self.edit.setText(row[x])
-                self.tableWidget.setCellWidget(y, x, self.edit)
+                self.tableWidget.setCellWidget(y, x, QLabel(row[x]))
+
+        self.tableWidget.resizeColumnsToContents()
+        self.tableWidget.resizeRowsToContents()
 
     def retranslateUi(self, Dialog):
         _translate = QCoreApplication.translate
