@@ -37,6 +37,10 @@ class MyWindowClass(QMainWindow):
         self.plugin_process = None
         self.plugin_writer = None
 
+        self.iplug_name = None
+        self.pplug_name = None
+        self.oplug_name = None
+
         # table headers
         self.ui.tblwidget.setColumnCount(3)
         self.ui.tblwidget.setRowCount(3)
@@ -184,29 +188,42 @@ class MyWindowClass(QMainWindow):
         dlg.exec_()
 
     def lstreaders_config(self):
-        iplug_name = self.ui.lstreaders.currentItem()
-        if iplug_name is not None:
-            if self.plugin_reader is None:
-                self.plugin_reader = self.pm.getClassByName(iplug_name.text())()
+        if self.ui.lstreaders.currentItem() is None:
+            self.ui.txtlog.append("[Error] - Select Plugin")
+            return
+        
+        if self.iplug_name != self.ui.lstreaders.currentItem():
+            self.iplug_name = self.ui.lstreaders.currentItem()
+            self.plugin_reader = self.pm.getClassByName(self.iplug_name.text())()
             self.plugin_reader.set_config()
         else:
-            self.ui.txtlog.append("[Error] - Select Plugin")
+            self.plugin_reader.set_config()
 
     def lstprocess_config(self):
-        pplug_name = self.ui.lstprocess.currentItem()
-        if pplug_name is not None:
-            self.plugin_process = self.pm.getClassByName(pplug_name.text())()
+        if self.ui.lstprocess.currentItem() is None:
+            self.ui.txtlog.append("[Error] - Select Plugin")
+            return
+
+        if self.pplug_name != self.ui.lstprocess.currentItem():
+            self.pplug_name = self.ui.lstprocess.currentItem()
+            self.plugin_process = self.pm.getClassByName(self.pplug_name.text())()
             self.plugin_process.set_config()
         else:
-            self.ui.txtlog.append("[Error] - Select Plugin")
+            self.plugin_process.set_config()
+
 
     def lstwriters_config(self):
-        oplug_name = self.ui.lstwriters.currentItem()
-        if oplug_name is not None:
-            self.plugin_writer = self.pm.getClassByName(oplug_name.text())()
+        if self.ui.lstwriters.currentItem() is None:
+            self.ui.txtlog.append("[Error] - Select Plugin")
+            return
+
+        if self.oplug_name != self.ui.lstwriters.currentItem():
+            self.oplug_name = self.ui.lstwriters.currentItem()
+            self.plugin_writer = self.pm.getClassByName(self.oplug_name.text())()
             self.plugin_writer.set_config()
         else:
-            self.ui.txtlog.append("[Error] - Select Plugin")
+            self.plugin_writer.set_config()
+
 
     def refresh(self):
         self.ui.lstreaders.clear()

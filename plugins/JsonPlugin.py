@@ -20,8 +20,8 @@ class JSONReaderLines(PluginReader):
         dialog = DynDialog()
         dialog.set_tittle("{0} - Setup".format(self.name))
         dialog.add_file("file_path", "Select File:", "Text Files (*.txt *.csv *.dat);;All Files(*.*)",
-                        DynDialog.FILE_DIALOG_OPEN)
-        dialog.add_combo_box("encoding", "Encoding:", python_encodings, "utf_8")
+                        DynDialog.FILE_DIALOG_OPEN, self.file_path)
+        dialog.add_combo_box("encoding", "Encoding:", python_encodings, "utf_8" if self.encoding is None else self.encoding)
         res = dialog.exec_()
         # set config
         if res == DynDialog.Accepted:
@@ -31,6 +31,7 @@ class JSONReaderLines(PluginReader):
 
     def open(self):
         self.json_file = open(file=self.file_path, mode="rt", newline=None, encoding=self.encoding)
+        self.current_row = 0
 
     def read(self):
         for line in self.json_file:
