@@ -4,10 +4,11 @@ from PyQt5.QtWidgets import QDialog, QVBoxLayout, QTableWidget, QHBoxLayout, QSp
 
 
 class Ui_Dialog(QDialog):
-    def __init__(self, parent=None):
+    def __init__(self, tittle, parent=None):
 
         super(Ui_Dialog, self).__init__(parent)
 
+        self.setWindowTitle(tittle)
         self.verticalLayout = QVBoxLayout(self)
         self.verticalLayout.setObjectName("verticalLayout")
         self.tableWidget = QTableWidget(self)
@@ -25,7 +26,7 @@ class Ui_Dialog(QDialog):
         self.verticalLayout.addLayout(self.horizontalLayout)
 
         self.btnok.clicked.connect(self.accept)
-        self.retranslateUi(self)
+        self.btnok.setText("ok")
 
     def add_data(self, headers, data):
         # setup widgets
@@ -41,8 +42,4 @@ class Ui_Dialog(QDialog):
 
         self.tableWidget.resizeColumnsToContents()
         self.tableWidget.resizeRowsToContents()
-
-    def retranslateUi(self, Dialog):
-        _translate = QCoreApplication.translate
-        Dialog.setWindowTitle(_translate("Dialog", "Dialog"))
-        self.btnok.setText(_translate("Dialog", "ok"))
+        self.resize(800, 600)

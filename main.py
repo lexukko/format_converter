@@ -179,7 +179,7 @@ class MyWindowClass(QMainWindow):
         finally:
             self.plugin_reader.close()
         # display data
-        dlg = Ui_Dialog(self)
+        dlg = Ui_Dialog( "Preview Data - {0} Lines".format(preview_rows) , self)
         dlg.add_data(headers, data)
         dlg.exec_()
 
