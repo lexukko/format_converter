@@ -89,11 +89,6 @@ class MyWindowClass(QMainWindow):
             self.lbl_process_plugin.setText(str(self.plugin_reader.current_row))
             self.lbl_output_plugin.setText("")
 
-        if self.plugin_process is not None:
-            self.lbl_input_read.setText(self.plugin_process.name)
-            self.lbl_process_read.setText(str(self.plugin_process.current_row))
-            self.lbl_output_read.setText("")
-
         if self.plugin_writer is not None:
             self.lbl_input_write.setText(self.plugin_writer.name)
             self.lbl_process_write.setText(str(self.plugin_writer.current_row))
@@ -107,51 +102,29 @@ class MyWindowClass(QMainWindow):
     def refresh_table(self):
         self.ui.tblwidget.clear()
 
-    def line_count(self, plugin_reader):
-        line_count = 0
-        try:
-            plugin_reader.open()
-            for line in plugin_reader.read():
-                line_count += 1
-            plugin_reader.close()
-        except Exception as e:
-            plugin_reader.close()
-            return json.dumps({"error": str(e)})
-        return line_count
-
     def transform(self):
-        if self.plugin_reader is None:
-            self.ui.txtlog.append("Select & config input plugin !!")
-            return
-        if self.plugin_process is None and self.plugin_writer is None:
-            self.ui.txtlog.append("Select & config process/input plugin(s) !!")
+        if self.plugin_reader is None or self.plugin_writer is None:
+            self.ui.txtlog.append("Select & config input/output plugin(s) !!")
             return
         try:
-            # transform
+            # get header
             self.plugin_reader.open()
-            if self.plugin_writer is not None:
-                self.plugin_writer.open()
+            header = self.plugin_reader.get_header()
+            # set header
+            self.plugin_writer.open()
+            self.plugin_writer.set_header(header)
             # loop
             self.ui.txtlog.append("[Working] Transforming Inputs.")
             for line in self.plugin_reader.read():
                 self.updateProgress()
-                if self.plugin_process is None:
-                    if self.plugin_writer is not None:
-                        self.plugin_writer.write(line)
-                else:
-                    if self.plugin_writer is not None:
-                        self.plugin_writer.write(self.plugin_process.process(line))
-                    else:
-                        self.plugin_process.process(line)
+                self.plugin_writer.write(line)
             self.ui.txtlog.append("[Done] Success! .")
         except Exception as e:
             self.ui.txtlog.append(str(e))
         finally:
             self.plugin_reader.close()
-            if self.plugin_writer is not None:
-                self.plugin_writer.close()
+            self.plugin_writer.close()
             self.plugin_reader = None
-            self.plugin_process = None
             self.plugin_writer = None
 
     # SLOTS
