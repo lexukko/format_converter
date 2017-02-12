@@ -40,7 +40,10 @@ class DelimitedReaderLines(PluginReader):
 
     def open(self):
         self.csv_file = open(file=self.file_path, mode="rt", newline="", encoding=self.encoding)
-        self.csv_reader = csv.reader(self.csv_file, delimiter=self.delimiter, quotechar=self.quotechar)
+        if self.quotechar:
+            self.csv_reader = csv.reader(self.csv_file, delimiter=self.delimiter, quotechar=self.quotechar)
+        else:
+            self.csv_reader = csv.reader(self.csv_file, delimiter=self.delimiter)
         self.current_row = 0
 
     def read(self):
