@@ -1,7 +1,7 @@
 import datetime
 import re
 from collections import OrderedDict
-from plugins.categorias.categorias import PluginProcess
+from plugins.categorias.categorias import PluginWriter
 from plugins.dynUI.dynUI import DynDialog
 
 
@@ -10,7 +10,7 @@ class PlugValidatorError(Exception):
         self.message = message
 
 
-class ValidateProcess(PluginProcess):
+class ValidateProcess(PluginWriter):
     def __init__(self):
         self.name = "ValidateProcess"
         self.version = "1.0"
@@ -59,7 +59,13 @@ class ValidateProcess(PluginProcess):
             self.allow_nulls = config["tbl"][1]
             self.skip_no = int(config["skip"])
 
-    def process(self, line):
+    def set_header(self):
+        pass
+
+    def open(self):
+        pass
+
+    def write(self, line):
         self.current_row += 1
         if self.current_row > self.skip_no:
             if not self.is_valid_row(line):
@@ -67,6 +73,9 @@ class ValidateProcess(PluginProcess):
                     "ERROR: Linea {0}, Columna {1}, Msg: {2}".format(self.current_row, self.current_col,
                                                                      self.msgErrorLine))
         return line
+    
+    def close(self):
+        pass
 
     # ---------------------------------------------------------------------------------------------------------------------------
     # -- funciones auxiliares

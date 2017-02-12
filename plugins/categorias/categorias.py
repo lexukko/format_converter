@@ -5,6 +5,9 @@ class PluginReader(object):
     def set_config(self):
         pass
 
+    def get_header(self):
+        pass
+
     def open(self):
         pass
 
@@ -12,16 +15,6 @@ class PluginReader(object):
         pass
 
     def close(self):
-        pass
-
-""" Clase de procesamiento de informacion """
-
-
-class PluginProcess(object):
-    def set_config(self):
-        pass
-
-    def process(self):
         pass
 
 
@@ -32,10 +25,13 @@ class PluginWriter(object):
     def set_config(self):
         pass
 
+    def set_header(self):
+        pass
+
     def open(self):
         pass
 
-    def write(self):
+    def write(self, line):
         pass
 
     def close(self):

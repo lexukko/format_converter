@@ -5,7 +5,7 @@ from datetime import datetime
 from PyQt5.QtWidgets import QApplication, QMainWindow, QInputDialog, QLabel
 from gui.ui_mainwindow import Ui_MainWindow
 import gui.icons_rc
-from plugins.categorias.categorias import PluginReader, PluginWriter, PluginProcess
+from plugins.categorias.categorias import PluginReader, PluginWriter
 from plugin_manager import PluginManager
 
 
@@ -23,22 +23,19 @@ class MyWindowClass(QMainWindow):
         self.ui.actionExit.triggered.connect(self.close)
 
         self.ui.pbreaderconfig.clicked.connect(self.lstreaders_config)
-        self.ui.pbprocessconfig.clicked.connect(self.lstprocess_config)
         self.ui.pbwriterconfig.clicked.connect(self.lstwriters_config)
 
         self.ui.pbpreview.clicked.connect(self.preview_data)
 
         # conversion manager
         self.pm = PluginManager()
-        self.pm.load_plugins('plugins', [PluginReader, PluginProcess, PluginWriter], False)
+        self.pm.load_plugins('plugins', [PluginReader, PluginWriter], False)
 
         # globals plugins
         self.plugin_reader = None
-        self.plugin_process = None
         self.plugin_writer = None
 
         self.iplug_name = None
-        self.pplug_name = None
         self.oplug_name = None
 
         # table headers
@@ -199,19 +196,6 @@ class MyWindowClass(QMainWindow):
         else:
             self.plugin_reader.set_config()
 
-    def lstprocess_config(self):
-        if self.ui.lstprocess.currentItem() is None:
-            self.ui.txtlog.append("[Error] - Select Plugin")
-            return
-
-        if self.pplug_name != self.ui.lstprocess.currentItem():
-            self.pplug_name = self.ui.lstprocess.currentItem()
-            self.plugin_process = self.pm.getClassByName(self.pplug_name.text())()
-            self.plugin_process.set_config()
-        else:
-            self.plugin_process.set_config()
-
-
     def lstwriters_config(self):
         if self.ui.lstwriters.currentItem() is None:
             self.ui.txtlog.append("[Error] - Select Plugin")
@@ -229,12 +213,11 @@ class MyWindowClass(QMainWindow):
         self.ui.lstreaders.clear()
         for reader in self.pm.getNamesByClass(PluginReader):
             self.ui.lstreaders.addItem(reader)
-        self.ui.lstprocess.clear()
-        for process in self.pm.getNamesByClass(PluginProcess):
-            self.ui.lstprocess.addItem(process)
+
         self.ui.lstwriters.clear()
         for writer in self.pm.getNamesByClass(PluginWriter):
             self.ui.lstwriters.addItem(writer)
+
         self.ui.txtlog.append("[Done] - Refresh")
 
     def run(self):
