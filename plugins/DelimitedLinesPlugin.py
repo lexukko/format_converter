@@ -11,6 +11,7 @@ class DelimitedReaderLines(PluginReader):
         self.description = "Plugin de lectura de archivos delimitados"
 
         self.file_path = None
+        self.skip = None
         self.delimiter = None
         self.quotechar = None
         self.encoding = None
@@ -22,15 +23,17 @@ class DelimitedReaderLines(PluginReader):
         dialog = DynDialog()
         dialog.set_tittle("{0} - Setup".format(self.name))
         dialog.add_file("file_path", "Select File:", "Text Files (*.txt *.csv *.dat);;All Files(*.*)",
-                        DynDialog.FILE_DIALOG_OPEN)
-        dialog.add_line_edit("delimiter", "Delimiter:", "", "")
-        dialog.add_line_edit("quotechar", "Quote Char:", "", "")
-        dialog.add_combo_box("encoding", "Encoding:", python_encodings, "utf_8")
+                        DynDialog.FILE_DIALOG_OPEN, self.file_path)
+        dialog.add_line_edit("skip", "Skip lines:", "", self.skip)                
+        dialog.add_line_edit("delimiter", "Delimiter:", "", self.delimiter)
+        dialog.add_line_edit("quotechar", "Quote Char:", "", self.quotechar)
+        dialog.add_combo_box("encoding", "Encoding:", python_encodings, "utf_8" if self.encoding is None else self.encoding )
         res = dialog.exec_()
         # set config
         if res == DynDialog.Accepted:
             config = dialog.data_dict
             self.file_path = config["file_path"]
+            self.skip = config["skip"]
             self.delimiter = config["delimiter"]
             self.quotechar = config["quotechar"]
             self.encoding = config["encoding"]
@@ -38,11 +41,13 @@ class DelimitedReaderLines(PluginReader):
     def open(self):
         self.csv_file = open(file=self.file_path, mode="rt", newline="", encoding=self.encoding)
         self.csv_reader = csv.reader(self.csv_file, delimiter=self.delimiter, quotechar=self.quotechar)
+        self.current_row = 0
 
     def read(self):
         for row in self.csv_reader:
             self.current_row += 1
-            yield (row)
+            if self.current_row > int(self.skip):
+                yield (row)
 
     def close(self):
         self.csv_file.close()

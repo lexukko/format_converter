@@ -160,7 +160,7 @@ class MyWindowClass(QMainWindow):
             self.ui.txtlog.append("Select & config input plugin !!")
             return
         # read data
-        preview_rows, ok = QInputDialog.getInt(self, "Input", "Select Number of rows")
+        preview_rows, ok = QInputDialog.getInt(self, "Input", "Select Number of rows", 100)
         current_row = 0
         headers = []
         data = []
@@ -186,7 +186,8 @@ class MyWindowClass(QMainWindow):
     def lstreaders_config(self):
         iplug_name = self.ui.lstreaders.currentItem()
         if iplug_name is not None:
-            self.plugin_reader = self.pm.getClassByName(iplug_name.text())()
+            if self.plugin_reader is None:
+                self.plugin_reader = self.pm.getClassByName(iplug_name.text())()
             self.plugin_reader.set_config()
         else:
             self.ui.txtlog.append("[Error] - Select Plugin")

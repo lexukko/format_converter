@@ -103,9 +103,10 @@ class DynDialog(QDialog):
             self.vl.addWidget(self.opt)
         self.FieldsLayout.addWidget(self.grp)
 
-    def add_file(self, widget_name, caption, file_patterns, dialog_type):
+    def add_file(self, widget_name, caption, file_patterns, dialog_type, data):
         self.txt_file = QLineEdit(self)
         self.txt_file.setObjectName(widget_name)
+        self.txt_file.setText(data)
         self.btn_file = QPushButton("...")
         self.btn_file.setMaximumWidth(50)
         self.FieldsLayout.addRow(caption, self.txt_file)
