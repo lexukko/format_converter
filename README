@@ -8,4 +8,7 @@ Formatos Soportados:
 	* Ancho Fijo (por porciones de caracteres)
 	* Verificador de campos
 
+Instalar Requerimientos
+
+pip install -r requirements.txt
 
